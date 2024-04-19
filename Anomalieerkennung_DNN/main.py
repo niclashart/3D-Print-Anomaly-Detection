@@ -7,12 +7,12 @@ from plot_metrics import plot_loss, plot_accuracy
 # Training
 
 # define epoch and batch_size to compare models
-epoch = 10
+epoch = 20
 batch_size = 1
 
 # load data for cnn 
-train_path = "./data"
-val_path = "./data"
+train_path = "./Anomalieerkennung_DNN/data/train"
+val_path = "./Anomalieerkennung_DNN/data/val"
 train_images, train_labels, val_images, val_labels = load_data(train_path=train_path, val_path=val_path)
 
 # TODO: train cnn
@@ -23,23 +23,23 @@ mini_cnn_model, mini_cnn_history = train_minicnn(epoch, batch_size, train_images
 
 # Prediction
 
-#file = 'shine100.jpg'   # File to predict
+file = './Anomalieerkennung_DNN/data/val/Schraube-Zylinder_ganz/IMG_8125.JPG'   # File to predict
 
-names_dict = {'Schraube-ohne_Schraubansatz': 0, 'Schraube-Zylinder_ganz': 1,
-                     'Schraube-Zylinder_oben': 2, "Schraube-Zylinder_unten": 3,
-                       "Standard-Schraube": 4, "Zylinder": 5}  # class names for cnn
+names_dict = {0: "Schraube-ohne_Schraubansatz", 1: 'Schraube-Zylinder_ganz',
+                     2: 'Schraube-Zylinder_oben',3: "Schraube-Zylinder_unten",
+                       4: "Standard-Schraube",5: "Zylinder"}  # class names for cnn
 
-#probs_cnn, pred_cnn = predict_cnn(cnn_model, file)
+probs_cnn, pred_cnn = predict_cnn(cnn_model, file)
 
-#probs_minicnn, pred_minicnn = predict_cnn(mini_cnn_model, file)
+probs_minicnn, pred_minicnn = predict_cnn(mini_cnn_model, file)
 
-#print(f"Class Dictionary: {names_dict}")
+print(f"Class Dictionary: {names_dict}")
 
-#print(f"Probabilities CNN: {probs_cnn}")
-#print(f"Prediction CNN: {names_dict[pred_cnn]}")
+print(f"Probabilities CNN: {probs_cnn}")
+print(f"Prediction CNN: {names_dict[pred_cnn]}")
 
-#print(f"Probabilities MiniCNN: {probs_minicnn}")
-#print(f"Prediction MiniCNN: {names_dict[pred_minicnn]}")
+print(f"Probabilities MiniCNN: {probs_minicnn}")
+print(f"Prediction MiniCNN: {names_dict[pred_minicnn]}")
 
 
 # Plot Results

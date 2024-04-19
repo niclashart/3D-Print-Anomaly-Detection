@@ -18,7 +18,7 @@ def plot_loss(cnn_history, mini_cnn_history):
     plt.ylabel('loss')
     plt.xlabel('epochs')
     plt.legend()
-    plt.savefig("loss.png")
+    plt.savefig("./Anomalieerkennung_DNN/loss.png")
 
 
 def plot_accuracy(cnn_history, mini_cnn_history):
@@ -37,4 +37,4 @@ def plot_accuracy(cnn_history, mini_cnn_history):
     plt.ylabel('accuracy (%)')
     plt.xlabel('epochs')
     plt.legend()
-    plt.savefig("accuracy.png")
+    plt.savefig("./Anomalieerkennung_DNN/accuracy.png")
