@@ -1,18 +1,18 @@
 import pandas as pd
 from helper_function import load_data
-from train import train_yolo, train_cnn, train_minicnn
-from predict import predict_yolo, predict_cnn
+from train import train_cnn, train_minicnn
+from predict import predict_cnn
 from plot_metrics import plot_loss, plot_accuracy
 
 # Training
 
 # define epoch and batch_size to compare models
-epoch = 200
+epoch = 10
 batch_size = 1
 
 # load data for cnn 
-train_path = "./Anomalieerkennung_DNN/data"
-val_path = "./Anomalieerkennung_DNN/data"
+train_path = "./data"
+val_path = "./data"
 train_images, train_labels, val_images, val_labels = load_data(train_path=train_path, val_path=val_path)
 
 # TODO: train cnn

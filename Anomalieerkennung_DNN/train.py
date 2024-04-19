@@ -2,16 +2,6 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras import layers, models
 
-
-def train_yolo(epoch):
-    # load a pretrained model (recommended for training)
-    # TODO: load pretrained yolov8n-cls model
-    yolo_model = YOLO("yolov8n-cls.pt")
-
-    # TODO: retrain yolo_model on weather_dataset (Hint: imgsz=64)
-    yolo_model.train(data='weather_dataset', epochs=epoch, imgsz=64)
-
-
 def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_labels):
     # define cnn
     cnn_model = models.Sequential([
@@ -25,7 +15,7 @@ def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_lab
         layers.Flatten(),
         layers.Dense(128, activation='relu'),
         layers.Dropout(0.2),
-        layers.Dense(3, activation='softmax')])
+        layers.Dense(6, activation='softmax')])
 
     # compile cnn
     cnn_model.compile(optimizer='adam',
@@ -48,7 +38,7 @@ def train_minicnn(epoch, batch_size, train_images, train_labels, val_images, val
                       padding='same', input_shape=(32, 32, 3)),
         layers.MaxPooling2D(2, 2),
         layers.Flatten(),
-        layers.Dense(3, activation='softmax')])
+        layers.Dense(6, activation='softmax')])
 
     # compile mini cnn
     mini_cnn_model.compile(optimizer='adam',
