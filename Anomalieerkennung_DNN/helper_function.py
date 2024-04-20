@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img
 # load data
 
 
-def load_data(train_path, val_path):
+def load_training_data(train_path, val_path):
 
     # load data for cnn
     train_images, train_labels = (load_images_from_folder(train_path))
@@ -14,6 +14,16 @@ def load_data(train_path, val_path):
     val_images, val_labels = (load_images_from_folder(val_path))
     val_images = val_images / 255.0
     return train_images, train_labels, val_images, val_labels
+
+# load test data from a single folder
+
+def load_test_data(test_path):
+
+    # load data for cnn
+    test_images, test_labels = (load_images_from_folder(test_path))
+    test_images = test_images / 255.0
+
+    return test_images, test_labels
 
 # load images from folders
 

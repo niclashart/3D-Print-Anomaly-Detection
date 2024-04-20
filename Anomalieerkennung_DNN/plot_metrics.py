@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 
 def plot_loss(cnn_history, mini_cnn_history):
@@ -38,3 +40,13 @@ def plot_accuracy(cnn_history, mini_cnn_history):
     plt.xlabel('epochs')
     plt.legend()
     plt.savefig("./Anomalieerkennung_DNN/accuracy.png")
+
+
+def plot_confusion_matrix(test_labels, predicted_labels,save_path):
+
+    confusion_matrix_predicted = confusion_matrix(test_labels, predicted_labels)
+
+    plt.figure()
+    plt.title("Confusion Matrix")
+    sns.heatmap(confusion_matrix_predicted, annot=True, fmt='d', cmap='Reds')
+    plt.savefig(save_path)
