@@ -6,19 +6,18 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img
 def load_data(train_path, val_path):
 
     # load data for cnn
-    train_images, train_labels = (load_images_from_folder(train_path))
+    train_images, train_labels = load_images_from_folder(train_path)
     train_images = train_images / 255.0
 
-    val_images, val_labels = (load_images_from_folder(val_path))
+    val_images, val_labels = load_images_from_folder(val_path)
     val_images = val_images / 255.0
     return train_images, train_labels, val_images, val_labels
+
 
 def load_images_from_folder(folder):
     images = []
     labels = []
-    class_labels = {'Schraube-ohne_Schraubansatz': 0, 'Schraube-Zylinder_ganz': 1,
-                     'Schraube-Zylinder_oben': 2, "Schraube-Zylinder_unten": 3,
-                       "Standard-Schraube": 4, "Zylinder": 5}
+    class_labels = {"Anomalie": 0, "Standard-Schraube": 1}
 
     for class_folder in os.listdir(folder):
         class_label = class_labels[class_folder]
