@@ -14,9 +14,9 @@ train_yolo(epoch)
 
 
 # Prediction
-file = '/home/jakob/4. Semester/Anomalieerkennung_YOLO/data/val/Anomalie/IMG_8117.JPG'   # File to predict
+file = './data/val/Anomalie/IMG_8123.JPG'   # File to predict
 
-yolo_path = './runs/classify/train/weights/last.pt'
+yolo_path = './runs/classify/train/weights/best.pt'
 
 names_dict = {0 : 'Anomalie', 1 : "Standard-Schraube"}
 
