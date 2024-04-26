@@ -45,7 +45,7 @@ if file_prediction:
 
 # Prediction on Test Data
 
-test_path = "./data/val_seitlich"
+test_path = "./data/test_seitlich"
 test_images, test_labels = load_test_data(test_path)
 
 # predict on test data

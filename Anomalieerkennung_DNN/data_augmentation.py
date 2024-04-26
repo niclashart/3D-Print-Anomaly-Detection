@@ -3,10 +3,10 @@ import torchvision.transforms as transforms
 from PIL import Image
 
 # Pfad zum Trainingsordner
-train_folder = './data/train_seitlich/Anomalie'
+train_folder = './data/train_seitlich/Standard-Schraube'
 
 # Pfad zum Ausgabeverzeichnis für die augmentierten Bilder
-output_folder = './data/train_seitlich/Anomalie'
+output_folder = './data/train_seitlich/Standard-Schraube'
 
 # Definieren Sie die gewünschten Transformationen für Data Augmentation
 augmentation_transform = transforms.Compose([

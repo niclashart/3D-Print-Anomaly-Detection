@@ -50,6 +50,6 @@ def load_images_from_folder(folder):
 
 def load_image_from_file(file):
     img_path = os.path.join(file)
-    img = load_img(img_path, target_size=(64, 64))
+    img = load_img(img_path, target_size=(32, 32))
     img_array = img_to_array(img)
     return np.array(img_array)
