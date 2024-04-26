@@ -6,14 +6,12 @@ from PIL import Image
 train_folder = './data/train_seitlich/Anomalie'
 
 # Pfad zum Ausgabeverzeichnis für die augmentierten Bilder
-output_folder = './data/train_seitlich/Augmented/Anomalie'
+output_folder = './data/train_seitlich/Anomalie'
 
 # Definieren Sie die gewünschten Transformationen für Data Augmentation
 augmentation_transform = transforms.Compose([
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(30),
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)
-])
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)])
 
 # Erstellen Sie das Ausgabeverzeichnis, falls es nicht existiert
 if not os.path.exists(output_folder):
@@ -27,7 +25,7 @@ for filename in os.listdir(train_folder):
         img = Image.open(img_path)
 
         # Wenden Sie Data Augmentation mehrmals an und speichern Sie die augmentierten Bilder (in diesem Fall 5-mal)
-        for i in range(10):
+        for i in range(5):
             augmented_img = augmentation_transform(img)
             output_path = os.path.join(output_folder, f"{filename.split('.')[0]}_{i}.jpg")
             augmented_img.save(output_path)

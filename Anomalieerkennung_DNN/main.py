@@ -8,7 +8,7 @@ from plot_metrics import plot_loss, plot_accuracy, plot_confusion_matrix
 # Training
 
 # define epoch and batch_size to compare models
-epoch = 20
+epoch = 10
 batch_size = 1
 
 # load data for cnn 
@@ -45,7 +45,7 @@ if file_prediction:
 
 # Prediction on Test Data
 
-test_path = "./data/test_seitlich"
+test_path = "./data/val_seitlich"
 test_images, test_labels = load_test_data(test_path)
 
 # predict on test data
