@@ -3,7 +3,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
 
-def plot_loss(cnn_history, mini_cnn_history):
+def plot_loss(cnn_history, mini_cnn_history, save_path):
 
     plt.figure()
 
@@ -20,10 +20,10 @@ def plot_loss(cnn_history, mini_cnn_history):
     plt.ylabel('loss')
     plt.xlabel('epochs')
     plt.legend()
-    plt.savefig("./Anomalieerkennung_DNN/loss.png")
+    plt.savefig(save_path)
 
 
-def plot_accuracy(cnn_history, mini_cnn_history):
+def plot_accuracy(cnn_history, mini_cnn_history, save_path):
 
     plt.figure()
 
@@ -39,7 +39,7 @@ def plot_accuracy(cnn_history, mini_cnn_history):
     plt.ylabel('accuracy (%)')
     plt.xlabel('epochs')
     plt.legend()
-    plt.savefig("./Anomalieerkennung_DNN/accuracy.png")
+    plt.savefig(save_path)
 
 
 def plot_confusion_matrix(test_labels, predicted_labels,save_path):
