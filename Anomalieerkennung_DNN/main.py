@@ -17,7 +17,7 @@ image_directory = './Anomalieerkennung_DNN/data_dnn/seitlich'
 image_size = (224, 224)
 
 # Anzahl der augmentierten Bilder pro Originalbild
-num_augmented_images_per_original = 10
+num_augmented_images_per_original = 8
 
 # Laden der Bilder und Umwandeln in Arrays
 def load_images_from_directory(directory, size):
@@ -47,7 +47,7 @@ labels = label_encoder.fit_transform(labels)
 
 # Daten teilen
 # Zuerst 60% Training und 40% temporär
-X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.3, random_state=42, stratify=labels)
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.42, random_state=42, stratify=labels)
 # Dann die temporären Daten in 50% Validierung und 50% Test teilen
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42, stratify=y_temp)
 
@@ -98,7 +98,7 @@ y_train_augmented = np.concatenate((y_train, augmented_labels))
 print('Neue Trainingsdaten:', X_train_augmented.shape, y_train_augmented.shape)
 
 epoch = 30
-batch_size = 2
+batch_size = 8
 
 # train cnn
 cnn_model, cnn_history = train_cnn(epoch, batch_size, X_train_augmented, y_train_augmented, X_val, y_val)
@@ -132,12 +132,26 @@ if file_prediction:
 # predict on test data
 cnn_test_probs = cnn_model.predict(X_test)
 cnn_test_pred = np.argmax(cnn_test_probs, axis=1)
-cnn_test_pred = label_encoder.inverse_transform(cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
 
 
 mini_cnn_test_probs = mini_cnn_model.predict(X_test)
 mini_cnn_test_pred = np.argmax(mini_cnn_test_probs, axis=1)
+
+# Ausgabe Loss und Accuracy auf Testdaten
+
+cnn_test_loss, cnn_test_accuracy = cnn_model.evaluate(X_test, y_test, verbose=0)
+mini_cnn_test_loss, mini_cnn_test_accuracy = mini_cnn_model.evaluate(X_test, y_test, verbose=0)
+
+print(f"Test Loss CNN: {cnn_test_loss}")
+print(f"Test Accuracy CNN: {cnn_test_accuracy}")
+
+print(f"Test Loss MiniCNN: {mini_cnn_test_loss}")
+print(f"Test Accuracy MiniCNN: {mini_cnn_test_accuracy}")
+
+
+cnn_test_pred = label_encoder.inverse_transform(cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
 mini_cnn_test_pred = label_encoder.inverse_transform(mini_cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
+
 
 # print counfusion matrix for both cnns
 y_test = label_encoder.inverse_transform(y_test)
@@ -149,3 +163,6 @@ plot_confusion_matrix(y_test, mini_cnn_test_pred, "./Anomalieerkennung_DNN/mini_
 
 plot_loss(cnn_history, mini_cnn_history, save_path="./Anomalieerkennung_DNN/loss.png")
 plot_accuracy(cnn_history, mini_cnn_history, save_path="./Anomalieerkennung_DNN/accuracy.png")
+
+
+

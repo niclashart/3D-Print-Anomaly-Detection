@@ -15,20 +15,20 @@ def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_lab
         layers.Flatten(),
         layers.Dense(128, activation='relu'),
         layers.Dropout(0.2),
-        layers.Dense(6, activation='softmax')])
+        layers.Dense(5, activation='softmax')])
 
     # compile cnn
     cnn_model.compile(optimizer='adam',
                       loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                       metrics=['accuracy'])
     
-    #callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
-    #reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2,
-    #                          patience=5, min_lr=0.001)
+    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=7, restore_best_weights=True)
+    reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy', factor=0.2,
+                              patience=5, min_lr=0.001)
 
     # fit cnn
     history = cnn_model.fit(train_images, train_labels,
-                            batch_size=batch_size, epochs=epoch, validation_data=(val_images, val_labels))
+                            batch_size=batch_size, epochs=epoch, validation_data=(val_images, val_labels), callbacks=[callback, reduce_lr])
 
     cnn_history_df = pd.DataFrame(history.history)
 
@@ -42,21 +42,21 @@ def train_minicnn(epoch, batch_size, train_images, train_labels, val_images, val
                       padding='same', input_shape=(224, 224, 3)),
         layers.MaxPooling2D(2, 2),
         layers.Flatten(),
-        layers.Dense(6, activation='softmax')])
+        layers.Dense(5, activation='softmax')])
 
     # compile mini cnn
     mini_cnn_model.compile(optimizer='adam',
                            loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                            metrics=['accuracy'])
     
-    #callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
-    #reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2,
-    #               patience=5, min_lr=0.001)
+    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=7, restore_best_weights=True)
+    reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy', factor=0.2,
+                   patience=5, min_lr=0.001)
 
 
     # fit mini cnn
     history = mini_cnn_model.fit(train_images, train_labels,
-                                 batch_size=batch_size, epochs=epoch, validation_data=(val_images, val_labels))
+                                 batch_size=batch_size, epochs=epoch, validation_data=(val_images, val_labels), callbacks=[callback, reduce_lr])
 
     mini_cnn_history_df = pd.DataFrame(history.history)
 
