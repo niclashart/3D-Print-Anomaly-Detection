@@ -1,33 +1,59 @@
-import os
-import torchvision.transforms as transforms
-from PIL import Image
+import numpy as np
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import matplotlib.pyplot as plt
+import random
 
-# Pfad zum Trainingsordner
-train_folder = './data/train_seitlich/Standard-Schraube'
+def perform_data_augmentation(X_train, y_train, num_augmented_images_per_original):
 
-# Pfad zum Ausgabeverzeichnis für die augmentierten Bilder
-output_folder = './data/train_seitlich/Standard-Schraube'
+    # Data Augmentation nur auf den Trainingsdaten (hier Parameter anpassen)
+    train_datagen = ImageDataGenerator(
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        fill_mode='nearest'
+    )
 
-# Definieren Sie die gewünschten Transformationen für Data Augmentation
-augmentation_transform = transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)])
+    # Augmentierte Daten erzeugen und in Arrays speichern
+    augmented_images = []
+    augmented_labels = []
 
-# Erstellen Sie das Ausgabeverzeichnis, falls es nicht existiert
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
+    for i in range(len(X_train)):
+        img = X_train[i]
+        label = y_train[i]
+        img = np.expand_dims(img, axis=0)
+        j = 0
+        for batch in train_datagen.flow(img, batch_size=1):
+            augmented_images.append(batch[0])
+            augmented_labels.append(label)
+            j += 1
+            if j >= num_augmented_images_per_original:
+                break
 
-# Durchsuchen Sie den Trainingsordner und wenden Sie Data Augmentation auf jedes Bild an
-for filename in os.listdir(train_folder):
-    if filename.endswith('.JPG'):
-        # Öffnen Sie das Bild
-        img_path = os.path.join(train_folder, filename)
-        img = Image.open(img_path)
+    # Konvertieren in numpy arrays
+    augmented_images = np.array(augmented_images)
+    augmented_labels = np.array(augmented_labels)
 
-        # Wenden Sie Data Augmentation mehrmals an und speichern Sie die augmentierten Bilder (in diesem Fall 5-mal)
-        for i in range(5):
-            augmented_img = augmentation_transform(img)
-            output_path = os.path.join(output_folder, f"{filename.split('.')[0]}_{i}.jpg")
-            augmented_img.save(output_path)
+    # Überprüfen der Anzahl der erzeugten augmentierten Bilder
+    print('Augmentierte Trainingsdaten:', augmented_images.shape, augmented_labels.shape)
 
-print("Data augmentation completed and augmented images saved to", output_folder)
+    # Zusammenführen der ursprünglichen und augmentierten Trainingsdaten
+    X_train_augmented = np.concatenate((X_train, augmented_images))
+    y_train_augmented = np.concatenate((y_train, augmented_labels))
+
+    # Überprüfen der neuen Trainingsdaten
+    print('Neue Trainingsdaten:', X_train_augmented.shape, y_train_augmented.shape)
+
+    # Beispiel: Anzeigen von zufällig ausgewählten augmentierten Trainingsbildern mit ihren Labels
+    plt.figure(figsize=(10, 10))
+    for i, img_index in enumerate(random.sample(range(len(augmented_images)), 9)):
+        plt.subplot(3, 3, i+1)
+        plt.imshow(augmented_images[img_index])
+        plt.axis('off')
+    plt.savefig("./Anomalieerkennung_DNN/augmented_images.png")
+
+    # Ausgabe der augmentierten Trainingsdaten
+
+    return X_train_augmented, y_train_augmented
