@@ -2,11 +2,11 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras import layers, models
 
-def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_labels):
+def train_cnn(epoch, batch_size, image_size, num_classes, train_images, train_labels, val_images, val_labels):
     # define cnn
     cnn_model = models.Sequential([
         layers.Conv2D(32, (3, 3), activation='relu',
-                      padding='same', input_shape=(224, 224, 3)),
+                      padding='same', input_shape=(image_size[0], image_size[1], 3)),
         layers.MaxPooling2D(2, 2),
         layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
         layers.MaxPooling2D(2, 2),
@@ -15,7 +15,7 @@ def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_lab
         layers.Flatten(),
         layers.Dense(128, activation='relu'),
         layers.Dropout(0.2),
-        layers.Dense(5, activation='softmax')])
+        layers.Dense(num_classes, activation='softmax')])
 
     # compile cnn
     cnn_model.compile(optimizer='adam',
@@ -35,14 +35,14 @@ def train_cnn(epoch, batch_size, train_images, train_labels, val_images, val_lab
     return cnn_model, cnn_history_df
 
 
-def train_minicnn(epoch, batch_size, train_images, train_labels, val_images, val_labels):
+def train_minicnn(epoch, batch_size, image_size, num_classes, train_images, train_labels, val_images, val_labels):
     # define mini cnn
     mini_cnn_model = models.Sequential([
         layers.Conv2D(32, (3, 3), activation='relu',
-                      padding='same', input_shape=(224, 224, 3)),
+                      padding='same', input_shape=(image_size[0], image_size[1], 3)),
         layers.MaxPooling2D(2, 2),
         layers.Flatten(),
-        layers.Dense(5, activation='softmax')])
+        layers.Dense(num_classes, activation='softmax')])
 
     # compile mini cnn
     mini_cnn_model.compile(optimizer='adam',

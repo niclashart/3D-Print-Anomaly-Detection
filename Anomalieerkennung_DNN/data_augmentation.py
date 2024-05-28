@@ -3,7 +3,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import random
 
-def perform_data_augmentation(X_train, y_train, num_augmented_images_per_original):
+def perform_data_augmentation(X_train, y_train, num_augmented_images_per_original, path):
 
     # Data Augmentation nur auf den Trainingsdaten (hier Parameter anpassen)
     train_datagen = ImageDataGenerator(
@@ -52,8 +52,9 @@ def perform_data_augmentation(X_train, y_train, num_augmented_images_per_origina
         plt.subplot(3, 3, i+1)
         plt.imshow(augmented_images[img_index])
         plt.axis('off')
-    plt.savefig("./Anomalieerkennung_DNN/augmented_images.png")
+    plt.savefig(path)
 
     # Ausgabe der augmentierten Trainingsdaten
 
     return X_train_augmented, y_train_augmented
+
