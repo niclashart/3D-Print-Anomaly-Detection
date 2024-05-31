@@ -21,11 +21,11 @@ image_size = (224, 224)
 
 use_augmentation = True
 
-num_augmented_images_per_original = 50
+num_augmented_images_per_original = 80
 
-epoch = 30
+epoch = 50
 
-batch_size = 8
+batch_size = 32
 
 num_classes = len(os.listdir(image_directory))
 

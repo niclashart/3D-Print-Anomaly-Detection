@@ -57,4 +57,3 @@ def perform_data_augmentation(X_train, y_train, num_augmented_images_per_origina
     # Ausgabe der augmentierten Trainingsdaten
 
     return X_train_augmented, y_train_augmented
-
