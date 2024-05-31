@@ -22,9 +22,9 @@ def train_cnn(epoch, batch_size, image_size, num_classes, train_images, train_la
                       loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                       metrics=['accuracy'])
     
-    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=7, restore_best_weights=True)
+    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15, restore_best_weights=True)
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy', factor=0.2,
-                              patience=5, min_lr=0.001)
+                              patience=10, min_lr=0.001)
 
     # fit cnn
     history = cnn_model.fit(train_images, train_labels,
@@ -49,9 +49,9 @@ def train_minicnn(epoch, batch_size, image_size, num_classes, train_images, trai
                            loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                            metrics=['accuracy'])
     
-    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=7, restore_best_weights=True)
+    callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15, restore_best_weights=True)
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy', factor=0.2,
-                   patience=5, min_lr=0.001)
+                   patience=10, min_lr=0.001)
 
 
     # fit mini cnn
