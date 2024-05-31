@@ -9,7 +9,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import os
 import tensorflow as tf
-from auto_cnn.gan import AutoCNN
+
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 # Pfad zu den Daten
 image_directory = './Anomalieerkennung_DNN/data_dnn/seitlich'
@@ -20,11 +21,11 @@ image_size = (224, 224)
 
 use_augmentation = True
 
-num_augmented_images_per_original = 10
+num_augmented_images_per_original = 50
 
-epoch = 20
+epoch = 30
 
-batch_size = 4
+batch_size = 8
 
 num_classes = len(os.listdir(image_directory))
 
@@ -41,9 +42,9 @@ labels = label_encoder.fit_transform(labels)
 
 # Daten Aufteilen in Training, Validierung und Test
 # Zuerst 58% Training und 42% temporär
-X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.42, random_state=42, stratify=labels)
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.42, stratify=labels)
 # Dann die temporären Daten in 50% Validierung und 50% Test teilen
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42, stratify=y_temp)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp)
 
 # Überprüfen der Aufteilung
 print('Trainingsdaten:', X_train.shape, y_train.shape)
@@ -57,21 +58,12 @@ if use_augmentation:
     y_train = y_train_augmented
 
 
-# train cnn
+# CNN Trainieren
 cnn_model, cnn_history = train_cnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
-# train mini cnn
+# Mini-CNN Trainieren
 mini_cnn_model, mini_cnn_history = train_minicnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
 
-# # train auto cnn (Achtung tensorflow 2.11.1)
-# data_auto_cnn = {'x_train': X_train, 'y_train': y_train, 'x_test': X_val, 'y_test': y_val}
-# auto_cnn = AutoCNN(population_size=5, maximal_generation_number=5, epoch_number=10, dataset=data_auto_cnn,
-#                    fitness_cache="./Anomalieerkennung_DNN/fitness_cache.json", logs_dir= './Anomalieerkennung_DNN/logs_auto_cnn/train_data',
-#                      checkpoint_dir= './Anomalieerkennung_DNN/checkpoints')
-# best_auto_cnn = auto_cnn.run()
-# print(best_auto_cnn)
-
-
-# predict on test data
+# Vorhersage auf Testdaten
 cnn_test_probs = cnn_model.predict(X_test)
 cnn_test_pred = np.argmax(cnn_test_probs, axis=1)
 
@@ -94,13 +86,28 @@ cnn_test_pred = label_encoder.inverse_transform(cnn_test_pred)  # Rücktransform
 mini_cnn_test_pred = label_encoder.inverse_transform(mini_cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
 
 
-# print counfusion matrix for both cnns
+# Ausgabe der Confusion Matrix für beide Modelle
 y_test = label_encoder.inverse_transform(y_test)
 
 plot_confusion_matrix(y_test, cnn_test_pred, save_path="./Anomalieerkennung_DNN/Auswertung/seitlich/cnn_confusion_matrix.png")
 plot_confusion_matrix(y_test, mini_cnn_test_pred, "./Anomalieerkennung_DNN/Auswertung/seitlich/mini_cnn_confusion_matrix.png")
 
-# Plot Results
+# Ergebnisse plotten
 
 plot_loss(cnn_history, mini_cnn_history, save_path="./Anomalieerkennung_DNN/Auswertung/seitlich/loss.png")
 plot_accuracy(cnn_history, mini_cnn_history, save_path="./Anomalieerkennung_DNN/Auswertung/seitlich/accuracy.png")
+
+# Auswertung auf binäre Klassifikation (Anomalie vs. Normal) -> Standard-Schraube = 0; alle Fehlerbilder = 1
+
+# Anomaliebilder als Klasse 1, Normale Bilder als Klasse 0
+y_test_binary = np.where(y_test == "Standard-Schraube", 0, 1)
+cnn_test_pred_binary = np.where(cnn_test_pred == "Standard-Schraube", 0, 1)
+mini_cnn_test_pred_binary = np.where(mini_cnn_test_pred == "Standard-Schraube", 0, 1)
+
+# Ausgabe der Genauigkeit
+
+cnn_test_accuracy_binary = np.mean(y_test_binary == cnn_test_pred_binary)
+mini_cnn_test_accuracy_binary = np.mean(y_test_binary == mini_cnn_test_pred_binary)
+
+print(f"Test Accuracy CNN Binary: {cnn_test_accuracy_binary}")
+print(f"Test Accuracy MiniCNN Binary: {mini_cnn_test_accuracy_binary}")
