@@ -17,6 +17,8 @@ prediction_seitlich = load_and_predict(model_path_seitlich, image_path_seitlich)
 
 # OneHotEncoder umkehren, um die Klasse zu erhalten
 predicted_class_seitlich = one_hot_encoder_seitlich.inverse_transform(prediction_seitlich)
+labels_seitlich = one_hot_encoder_seitlich.categories_[0]
+print("Labels seitlicher OneHotEncoder:", labels_seitlich)
 print("Vorhersage seitliche Ansicht:", prediction_seitlich)
 print("Vorhersage Klasse seitliche Ansicht:", predicted_class_seitlich)
 
@@ -25,6 +27,9 @@ prediction_oben = load_and_predict(model_path_oben, image_path_oben)
 
 # OneHotEncoder umkehren, um die Klasse zu erhalten
 predicted_class_oben = one_hot_encoder_oben.inverse_transform(prediction_oben)
+# Labels für den oberen OneHotEncoder
+labels_oben = one_hot_encoder_oben.categories_[0]
+print("Labels oberer OneHotEncoder:", labels_oben)
 print("Vorhersage obere Ansicht:", prediction_oben)
 print("Vorhersage Klasse obere Ansicht:", predicted_class_oben)
 
