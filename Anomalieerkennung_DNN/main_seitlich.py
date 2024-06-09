@@ -25,11 +25,11 @@ image_directory = './Anomalieerkennung_DNN/data_dnn/seitlich'
 
 image_size = (224, 224)
 
-use_augmentation = False
+use_augmentation = True
 
 num_augmented_images_per_original = 80
 
-epoch = 1
+epoch = 30
 
 batch_size = 32
 

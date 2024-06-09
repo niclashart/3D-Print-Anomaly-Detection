@@ -9,3 +9,5 @@ torchvision
 PIL
 ultralytics
 cv2
+logging
+joblib
