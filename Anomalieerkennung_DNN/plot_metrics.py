@@ -49,8 +49,16 @@ def plot_confusion_matrix(test_labels, predicted_labels, save_path):
 
     label_words = np.unique(np.concatenate((test_labels, predicted_labels)))
 
-    plt.figure()
+    plt.figure(figsize=(10, 8))
     plt.title("Confusion Matrix")
+    plt.ylabel("Wahre Klasse")
+    plt.xlabel("Vorhergesagte Klasse")
     sns.heatmap(confusion_matrix_predicted, annot=True, fmt='d', cmap='Reds', 
                 xticklabels=label_words, yticklabels=label_words)
+    # Anpassen der Beschriftungen
+    plt.xticks(rotation=45)  # Dreht die x-Achsen-Beschriftungen schräg
+    plt.yticks(rotation=45)  # Dreht die y-Achsen-Beschriftungen schräg
+
+    plt.tight_layout()  # Passt die Parameter der Abbildung an, um Überlappungen zu vermeiden
+    plt.subplots_adjust(bottom=0.2)  # Passt den unteren Rand der Abbildung an
     plt.savefig(save_path)

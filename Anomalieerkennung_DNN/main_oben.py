@@ -8,9 +8,13 @@ from plot_metrics import plot_loss, plot_accuracy, plot_confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 import os
+import logging
 import tensorflow as tf
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+# TensorFlow-Warnungen unterdrücken
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # F zeigt nur Fehler an
+logging.getLogger('tensorflow').setLevel(logging.ERROR)
 
 # Pfad zu den Daten
 image_directory = './Anomalieerkennung_DNN/data_dnn/oben'
@@ -25,7 +29,7 @@ num_augmented_images_per_original = 80
 
 epoch = 30
 
-batch_size = 32
+batch_size = 16
 
 num_classes = len(os.listdir(image_directory))
 
@@ -60,8 +64,10 @@ if use_augmentation:
 
 # CNN Trainieren
 cnn_model, cnn_history = train_cnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
+cnn_model.save("./Anomalieerkennung_DNN/Modell/oben/cnn_model.h5")
 # Mini-CNN Trainieren
 mini_cnn_model, mini_cnn_history = train_minicnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
+mini_cnn_model.save("./Anomalieerkennung_DNN/Modell/oben/mini_cnn_model.h5")
 
 
 # Vorhersage auf Testdaten

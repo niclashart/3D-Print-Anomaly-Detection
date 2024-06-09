@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img
 # Laden eines Bildes und Umwandeln in ein Array
 def load_image_from_file(file):
     img_path = os.path.join(file)
-    img = load_img(img_path, target_size=(32, 32))
+    img = load_img(img_path, target_size=(224, 224))
     img_array = img_to_array(img)
     return np.array(img_array)
 
