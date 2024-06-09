@@ -68,10 +68,8 @@ mini_cnn_model, mini_cnn_history = train_minicnn(epoch, batch_size, image_size, 
 
 # Vorhersage auf Testdaten
 cnn_test_probs = cnn_model.predict(X_test)
-#cnn_test_pred = np.argmax(cnn_test_probs, axis=1)
 
 mini_cnn_test_probs = mini_cnn_model.predict(X_test)
-#mini_cnn_test_pred = np.argmax(mini_cnn_test_probs, axis=1)
 
 # Ausgabe Loss und Accuracy auf Testdaten
 
