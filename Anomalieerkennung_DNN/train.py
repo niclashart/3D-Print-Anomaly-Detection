@@ -19,7 +19,7 @@ def train_cnn(epoch, batch_size, image_size, num_classes, train_images, train_la
 
     # compile cnn
     cnn_model.compile(optimizer='adam',
-                      loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+                      loss=tf.keras.losses.CategoricalCrossentropy(),
                       metrics=['accuracy'])
     
     callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15, restore_best_weights=True)
@@ -46,7 +46,7 @@ def train_minicnn(epoch, batch_size, image_size, num_classes, train_images, trai
 
     # compile mini cnn
     mini_cnn_model.compile(optimizer='adam',
-                           loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+                           loss=tf.keras.losses.CategoricalCrossentropy(),
                            metrics=['accuracy'])
     
     callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15, restore_best_weights=True)
