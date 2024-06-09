@@ -3,13 +3,13 @@ import numpy as np
 from helper_function import load_images_from_directory
 from data_augmentation import perform_data_augmentation
 from train import train_cnn, train_minicnn
-from predict import predict_cnn
 from plot_metrics import plot_loss, plot_accuracy, plot_confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 import os
 import logging
 import tensorflow as tf
+import joblib
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 # TensorFlow-Warnungen unterdrücken
@@ -23,11 +23,11 @@ image_directory = './Anomalieerkennung_DNN/data_dnn/oben'
 
 image_size = (224, 224)
 
-use_augmentation = True
+use_augmentation = False
 
 num_augmented_images_per_original = 80
 
-epoch = 30
+epoch = 1
 
 batch_size = 16
 
@@ -43,6 +43,7 @@ images = images.astype('float32') / 255.0
 # Initialisieren des OneHotEncoders
 one_hot_encoder = OneHotEncoder(sparse_output=False)
 labels = one_hot_encoder.fit_transform(labels.reshape(-1, 1))
+joblib.dump(one_hot_encoder, "./Anomalieerkennung_DNN/Modell/oben/one_hot_encoder.joblib")
 
 # Daten Aufteilen in Training, Validierung und Test
 # Zuerst 58% Training und 42% temporär
