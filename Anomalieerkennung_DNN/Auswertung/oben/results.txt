@@ -1,0 +1,6 @@
+Test Loss CNN: 12.393209457397461
+Test Accuracy CNN: 0.875
+Test Loss MiniCNN: 2.585824966430664
+Test Accuracy MiniCNN: 0.90625
+Test Accuracy CNN Binary: 0.875
+Test Accuracy MiniCNN Binary: 0.9375
