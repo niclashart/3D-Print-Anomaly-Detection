@@ -3,14 +3,18 @@ import numpy as np
 from helper_function import load_images_from_directory
 from data_augmentation import perform_data_augmentation
 from train import train_cnn, train_minicnn
-from predict import predict_cnn
 from plot_metrics import plot_loss, plot_accuracy, plot_confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 import os
+import logging
 import tensorflow as tf
+import joblib
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+# TensorFlow-Warnungen unterdrücken
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # F zeigt nur Fehler an
+logging.getLogger('tensorflow').setLevel(logging.ERROR)
 
 # Pfad zu den Daten
 image_directory = './Anomalieerkennung_DNN/data_dnn/oben'
@@ -21,11 +25,11 @@ image_size = (224, 224)
 
 use_augmentation = True
 
-num_augmented_images_per_original = 50
+num_augmented_images_per_original = 80
 
 epoch = 30
 
-batch_size = 8
+batch_size = 16
 
 num_classes = len(os.listdir(image_directory))
 
@@ -36,9 +40,10 @@ images, labels = load_images_from_directory(image_directory, image_size)
 # Normalisieren der Bilddaten
 images = images.astype('float32') / 255.0
 
-# Umwandeln der Labels in numerische Form (falls nötig)
-label_encoder = LabelEncoder()
-labels = label_encoder.fit_transform(labels)
+# Initialisieren des OneHotEncoders
+one_hot_encoder = OneHotEncoder(sparse_output=False)
+labels = one_hot_encoder.fit_transform(labels.reshape(-1, 1))
+joblib.dump(one_hot_encoder, "./Anomalieerkennung_DNN/Modell/oben/one_hot_encoder.joblib")
 
 # Daten Aufteilen in Training, Validierung und Test
 # Zuerst 58% Training und 42% temporär
@@ -60,16 +65,16 @@ if use_augmentation:
 
 # CNN Trainieren
 cnn_model, cnn_history = train_cnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
+cnn_model.save("./Anomalieerkennung_DNN/Modell/oben/cnn_model.h5")
 # Mini-CNN Trainieren
 mini_cnn_model, mini_cnn_history = train_minicnn(epoch, batch_size, image_size, num_classes, X_train, y_train, X_val, y_val)
+mini_cnn_model.save("./Anomalieerkennung_DNN/Modell/oben/mini_cnn_model.h5")
 
 
 # Vorhersage auf Testdaten
 cnn_test_probs = cnn_model.predict(X_test)
-cnn_test_pred = np.argmax(cnn_test_probs, axis=1)
 
 mini_cnn_test_probs = mini_cnn_model.predict(X_test)
-mini_cnn_test_pred = np.argmax(mini_cnn_test_probs, axis=1)
 
 # Ausgabe Loss und Accuracy auf Testdaten
 
@@ -83,12 +88,12 @@ print(f"Test Loss MiniCNN: {mini_cnn_test_loss}")
 print(f"Test Accuracy MiniCNN: {mini_cnn_test_accuracy}")
 
 
-cnn_test_pred = label_encoder.inverse_transform(cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
-mini_cnn_test_pred = label_encoder.inverse_transform(mini_cnn_test_pred)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
+cnn_test_pred = one_hot_encoder.inverse_transform(cnn_test_probs)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
+mini_cnn_test_pred = one_hot_encoder.inverse_transform(mini_cnn_test_probs)  # Rücktransformation der numerischen Labels in die ursprünglichen Labels
 
 
 # Ausgabe der Confusion Matrix für beide Modelle
-y_test = label_encoder.inverse_transform(y_test)
+y_test = one_hot_encoder.inverse_transform(y_test)
 
 plot_confusion_matrix(y_test, cnn_test_pred, save_path="./Anomalieerkennung_DNN/Auswertung/oben/cnn_confusion_matrix.png")
 plot_confusion_matrix(y_test, mini_cnn_test_pred, "./Anomalieerkennung_DNN/Auswertung/oben/mini_cnn_confusion_matrix.png")
