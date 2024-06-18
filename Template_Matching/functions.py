@@ -28,8 +28,10 @@ def template_matching(test_image, template):
     test_image_gray = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 
+    min_width = 30
+    min_height = 30
     # Set a threshold
-    threshold = 0.51
+    threshold = 0.782
 
     # Perform template matching in multiple scales
     for scale in np.linspace(0.2, 1.0, 20)[::-1]:
@@ -46,8 +48,12 @@ def template_matching(test_image, template):
         # Find the locations where the match score is above the threshold
         loc = np.where(result >= threshold)
 
-        # If the number of matches is above 0, return True
-        if len(loc[0]) > 0:
+        # Additional validation for detected matches
+        for pt in zip(*loc[::-1]):  
+            match_width, match_height = resized_template.shape[::-1]
+            if match_width < min_width or match_height < min_height:  # min_width und min_height müssen definiert werden
+                continue  
+            
             return True
 
     # If no match was found, return False
@@ -64,20 +70,30 @@ def get_images(folder):
                     images.append(full_path)
     return images
 
+selected_rect = None
 
-def remove_background(image):
+def remove_background(image, refine_iterations=5):
+    global selected_rect  # Verwenden der globalen Variable
+
     mask = np.zeros(image.shape[:2], np.uint8)
-
     bgdModel = np.zeros((1,65),np.float64)
     fgdModel = np.zeros((1,65),np.float64)
 
-    # Define the rectangle to include the whole image
-    rect = (1, 1, image.shape[1]-2, image.shape[0]-2)
+    # Überprüfen, ob das Rechteck bereits ausgewählt wurde
+    if selected_rect is None:
+        # Rechteck auswählen und in der globalen Variable speichern
+        selected_rect = cv2.selectROI("Image", image, False, False)
+        cv2.destroyWindow("Image")  # Schließt das Fenster nach der Auswahl
 
-    cv2.grabCut(image, mask, rect, bgdModel, fgdModel, 10, cv2.GC_INIT_WITH_RECT)
+    # Verwenden des gespeicherten Rechtecks für grabCut
+    cv2.grabCut(image, mask, selected_rect, bgdModel, fgdModel, 10, cv2.GC_INIT_WITH_RECT)
 
+    kernel = np.ones((3, 3), np.uint8)
+    for _ in range(refine_iterations):
+        mask = cv2.dilate(mask, kernel, iterations=1)
+        mask = cv2.erode(mask, kernel, iterations=1)
+    
     mask2 = np.where((mask==2)|(mask==0), 0, 1).astype('uint8')
-
     image = image * mask2[:,:,np.newaxis]
 
     return image

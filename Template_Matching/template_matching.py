@@ -6,10 +6,10 @@ import numpy as np
 from functions import visualize_images, template_matching, get_images, remove_background, scale_and_rotate
 
 # Path to the folder containing the template images
-template_folder = './original_data/template'
+template_folder = '.\\original_data\\template'
 
 # Path to the folder containing the test images
-test_folder = './original_data'
+test_folder = '.\\original_data'
 
 all_folders = [f.path for f in os.scandir(test_folder) if f.is_dir()]
 
@@ -42,7 +42,7 @@ image_counter = 0
 for test_image_path in test_images:
     # Load the test image
     test_image = cv2.imread(test_image_path)
-
+    # test_image = remove_background(test_image)
     print('Test image:', test_image_path)
 
     # Flag to indicate if a match was found
@@ -79,8 +79,8 @@ for test_image_path in test_images:
     if not match_found:
         print(f"No match found for test image {test_image_path}")
         anomalies_counter += 1
-        plt.imshow(cv2.cvtColor(test_image, cv2.COLOR_BGR2RGB))
-        plt.show()
+        # plt.imshow(cv2.cvtColor(test_image, cv2.COLOR_BGR2RGB))
+        # plt.show()
 
     total_attempts += 1
 
@@ -93,10 +93,21 @@ print(f"Final number of anomalies: {anomalies_counter}")
 print(f"Final number of successful matches: {successful_matches}")
 print(f"Total attempts: {total_attempts}")
 
-# Plot matches and anomalies
-plt.plot(successful_matches, label='Matches')
-plt.plot(anomalies_counter, label='Anomalies')
-plt.xlabel('Attempt number')
-plt.ylabel('Count')
-plt.legend()
+anomalies_original = 245 # Gesamtanzahl der seitlichen Anomalien im Data-Ordner
+standard_original = 94 # Gesamtzahl der seitlichen Standardschraube (eigentliche Matches)
+original = 339
+accuracy = ((anomalies_original + successful_matches) / original) * 100
+print(f'Genauigkeit: {accuracy:.2f}%')
+
+# Daten für die Grafik
+labels = ['Matches', 'Anomalien']
+sizes = [successful_matches, total_attempts - successful_matches]
+colors = ['lightgreen', 'lightcoral']
+explode = (0.1, 0)  # Nur das erste Stück wird "herausgesprengt"
+
+# Erstellen der Grafik
+plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title(f'Ergebnisse Template Matching - Genauigkeit: {accuracy:.2f}%')
+plt.savefig('accuracy_pie-chart.png')
 plt.show()
