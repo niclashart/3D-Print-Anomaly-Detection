@@ -9,5 +9,10 @@ Ziel des Projektes ist es anhand von Bildern von gedruckten 3D-Drucken zu erkenn
 
 ## Ergebnis
 
+Genauigkeit bei Klassifizierung Gutteil / Anomalie bei der seitlichen Perspektive:
+
+Template Matching: 84%
+Trainiertes CNN: 99%
+Nachtrainiertes YOLO: 100%
 
 ## Hinweise zur Benutzung / Weiterverwendung
