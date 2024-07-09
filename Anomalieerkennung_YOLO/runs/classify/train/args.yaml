@@ -1,12 +1,12 @@
 task: classify
 mode: train
 model: yolov8n-cls.pt
-data: data
-epochs: 20
+data: ./data_split_oben
+epochs: 1
 time: null
 patience: 100
 batch: 16
-imgsz: 64
+imgsz: 128
 save: true
 save_period: -1
 cache: false

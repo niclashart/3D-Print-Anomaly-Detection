@@ -3,10 +3,14 @@ import torchvision.transforms as transforms
 from PIL import Image
 
 # Pfad zum Trainingsordner
-train_folder = './data/train/Anomalie'
+train_folder = './data_split_oben/train/Anomalie'
+#train_folder = './data_split_oben/train/Schraube'
+
 
 # Pfad zum Ausgabeverzeichnis für die augmentierten Bilder
-output_folder = './data/train/Anomalie_augmented'
+output_folder = './data_split_oben/train/Anomalie'
+#output_folder = './data_split_oben/train/Schraube'
+
 
 # Definieren Sie die gewünschten Transformationen für Data Augmentation
 augmentation_transform = transforms.Compose([
@@ -27,7 +31,7 @@ for filename in os.listdir(train_folder):
         img = Image.open(img_path)
 
         # Wenden Sie Data Augmentation mehrmals an und speichern Sie die augmentierten Bilder
-        for i in range(5):
+        for i in range(20):
             augmented_img = augmentation_transform(img)
             output_path = os.path.join(output_folder, f"{filename.split('.')[0]}_{i}.jpg")
             augmented_img.save(output_path)

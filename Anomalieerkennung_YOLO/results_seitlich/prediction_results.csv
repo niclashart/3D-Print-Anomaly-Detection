@@ -1,0 +1,8 @@
+File,True Label,Predicted Label,Probabilities,Detailed Accuracy
+./test_oben/Schraube/IMG_9271.JPG,Schraube,Schraube,[   6.64e-07           1],1
+./test_oben/Schraube/IMG_9264.JPG,Schraube,Schraube,[  0.0011941     0.99881],1
+./test_oben/Schraube/IMG_9274.JPG,Schraube,Schraube,[  2.383e-07           1],1
+./test_oben/Schraube/IMG_8066.JPG,Schraube,Schraube,[ 4.8848e-05     0.99995],1
+./test_oben/Anomalie/IMG_9369.JPG,Anomalie,Anomalie,[          1  4.5049e-06],1
+./test_oben/Anomalie/IMG_9379.JPG,Anomalie,Anomalie,[    0.99999  7.1242e-06],1
+./test_oben/Anomalie/IMG_9367.JPG,Anomalie,Anomalie,[    0.99999  1.1201e-05],1

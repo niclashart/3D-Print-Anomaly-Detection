@@ -8,7 +8,7 @@ def predict_yolo(model_path, file):
 
     # predict on an image
     results = model(file)
-    probs = results[0].probs.data.numpy()
+    probs = results[0].cpu().probs.data.numpy()
     pred =  np.argmax(probs)
 
     return probs, pred
