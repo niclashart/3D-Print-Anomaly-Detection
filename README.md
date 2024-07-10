@@ -14,5 +14,3 @@ Genauigkeit bei Klassifizierung Gutteil / Anomalie bei der seitlichen Perspektiv
 Template Matching: 84%, 
 Trainiertes CNN: 99%, 
 Nachtrainiertes YOLO: 100%
-
-## Hinweise zur Benutzung / Weiterverwendung
